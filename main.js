@@ -1,15 +1,21 @@
-//commando framework for discord.js
 
-const commando = require("discord.js-commando");
-
-//config file for JSON.
+//config file for JSON, this will get the prefix and the token from the discord.api
 const botconfig = require("./config.json");
 //this is the  discord.js libary
 const Discord = require ("discord.js");
 
+
+// from the discord.js libary.
+const client = new Discord.Client;
+client.commands = new Discord.Collection();
 //fs is for the file system to read them.
+
 const fs = require("fs");
 
+//commando framework for discord.js
+
+const commando = require("discord.js-commando");
+//this is used for the bot playing music.
  global.servers = {};
 
 
@@ -17,14 +23,10 @@ const fs = require("fs");
  const queue = new Map();
 
 
-// from the discord.js libary.
-const client = new Discord.Client;
-const newUsers = new Discord.Collection();
-client.commands = new Discord.Collection();
-
 
 
 //reading all the files in the folder
+//if theres any errors this will console.error if any appear.
 fs.readdir("./botcommandz/",(err, files) =>{
   if(err) console.error(err);
   //filter will look through all the files and be true. pop will take the last part of the array.
@@ -35,10 +37,12 @@ let jsfile = files.filter(f => f.split(".").pop() === "js")
 
  }
   console.log(`loading ${jsfile} commands`);
-
+//Foreach loop was more better than using the basic for loop.
   jsfile.forEach((f,i) =>  {
   let props = require(`./botcommandz/${f}`);
+//this will load all the files in botcommandz and print this into the console.log.
   console.log(`${i+1}: ${f} Loaded`);
+  //help.name will allow me to call the command
  client.commands.set(props.help.name, props);
 });
 
@@ -60,6 +64,8 @@ client.on("ready", async () =>
 
  //let xp = require('./usersxp.json');
 let xp = require('./xp.json');
+let coins = require('./coins.json');
+
 
 
 client.on("message",async message =>
@@ -123,6 +129,38 @@ let args =  messageArray.slice(1);
     }
 
 */
+
+if(!coins[message.author.id])
+{
+  coins[message.author.id]
+  {
+    coins :0
+  };
+}
+
+let coinAmt = Math.floor(Math.random()*15)+1;
+let baseAmt = Math.floor(Math.random()*15)+1;
+console.log(`$[coinAmt]; $[baseAmt]`);
+
+
+  if(coinAmt === baseAmt){
+    coins[message.author.id] = {
+      coins: coins[message.author.id].coins + coinAmt
+};
+fs.writeFile("./coins.json", JSON.stringify(coins), (err) => {
+if (err) console.log(err)
+});
+let coinEmbed = new Discord.RichEmbed()
+.setAuthor(message.author.username)
+.setColor("#0000FF")
+.addField("💸", `${coinAmt} coins added!`);
+
+message.channel.send(coinEmbed).then(msg => {msg.delete(5000)});
+    }
+
+
+
+
 let xpAdd = Math.floor(Math.random() * 7) + 8;
   console.log(xpAdd);
 
@@ -162,5 +200,5 @@ let xpAdd = Math.floor(Math.random() * 7) + 8;
 
 //While bot on, if pharase are said, the bot will react it different ways.
 
-//this is the discord token.
+//this is the discord token from the botconfig.json
 client.login(botconfig.token);
