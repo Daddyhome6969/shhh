@@ -1,19 +1,19 @@
 const Discord = require ("discord.js");
-const commando = require ('discord.js-commando');
 
 
-module.exports.run = async(client, message, args) =>{
-      if(message.member.voiceConnection)
-      {
-        message.guild.voiceConnection.leave();
-      }
-  else
+module.exports.run = async (client, message, args) => {
+  //if bot is in the voice channel.
+  if (message.guild.voiceChannel)
   {
-    message.reply("need to be in a voice channel to leave");
+    message.guild.voiceConnection.disconnect()
   }
- }
-     module.exports.help = {
+   else {
+     message.channel.send("i must be in the channel to leave")
+   }
 
-       name:"stop"
 
-     }
+}
+
+module.exports.help = {
+    name: "kick"
+}

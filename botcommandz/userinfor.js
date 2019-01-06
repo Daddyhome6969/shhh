@@ -10,19 +10,19 @@
       name:message.author.username,
       icon_url: message.author.avatarURL
     },
-    title: "title of the user",
+
     //description:  message.author.roles.map(role => role.name),
     fields: [{
-      name:"Fields",
-      value:"you can do "
-     },
+      name:"User joined ",
+      value:message.member.joinedAt
+     }
           ],
           timestamp: new Date(),
           footer:{
             icon_url: message.author.avatarURL,
-            text:"example"
+
           }
-  }
+        }     
 
       });
 

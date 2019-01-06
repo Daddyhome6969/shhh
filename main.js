@@ -1,4 +1,3 @@
-
 //config file for JSON, this will get the prefix and the token from the discord.api
 const botconfig = require("./config.json");
 //this is the  discord.js libary
@@ -50,11 +49,12 @@ let jsfile = files.filter(f => f.split(".").pop() === "js")
 });
 //When bot online it will, print to the console log that  its online.
 //the setActivity is what is doing e.g. coding
-client.on("ready", async () =>
+
+  client.on("ready", async () =>
 {
   //When the bot is online, Can set the game its playing.
   console.log(`${client.user.username} is online!` );
-   client.user.setActivity("Coding ");
+ client.user.setActivity( `How many users online: ${client.guilds.size}`);
    console.log(client.commands);
 
 });
@@ -62,9 +62,11 @@ client.on("ready", async () =>
 
 
 
+
+
  //let xp = require('./usersxp.json');
 let xp = require('./xp.json');
-let coins = require('./coins.json');
+
 
 
 
@@ -88,114 +90,53 @@ let args =  messageArray.slice(1);
   let commandfile = client.commands.get(cmd.slice(prefix.length));
   if(commandfile) commandfile.run(client,message,args);
 
-//retuns the first message in the array e.g. Hello as this is the first in the array.
 
-/* coming back to this.....
 
-      if(message.content.startsWith( `${prefix}mute`))
-      {
 
-        //checking permission if the users have mange users checked.
-        //if(!message.memeber.hasPermission('MANAGE_MESSAGES')) return message.channel.sendMessage("you dont permission.");
+  //setting xpAdd to = math.floor(Math.random() * ) + ;
 
-                //Get the meminted user and mute them.
-        //first(); means this.
-        let toMute = message.guild.memeber(message.mentions.users.first());
-        if(!toMute) return message.channel.sendMessage("you didnt mention the users");
-        return(message.channel.sendMessage("mutes"));
-      }
-/*
-        let role = message.guild.roles.find( r => r.name === "MUTED");
-        if(!role)
-        {
-        try {
-        role =   await message.guild.createRole({
-          name: "MUTED",
-          color:"#00000",
-          permissions: []
-        });
-        message.guild.channels.forEach(async(channel, id ) =>{
-            await channel.overwritePermissions(ro,
-            {
-              SEND_MESSAGES: false,
-              ADD_REACTION : false
-            });
-                });
-                    } catch (e) {
-           console.log(e.stack);
-          }
-        }
-        return;
+  let xpAdd = Math.floor(Math.random() * 100) + 8;
+  //console.log (xpadd) to see if it works.
+    console.log(xpAdd);
+  //if the users not created in the file yet, set them to xp:0, level 0
+    if(!xp[message.author.id]){
+      xp[message.author.id] = {
+        xp: 0,
+        level: 0
+      };
     }
 
-*/
-
-if(!coins[message.author.id])
-{
-  coins[message.author.id]
+  //let the current xp with the author.id e.g. 180783462578520064
+    let currentxp = xp[message.author.id].xp;
+   //let the current level with the author id. levle
+   let currentlvl = xp[message.author.id].level;
+  //each level up will take * 900. e.g. level 2 will be 1800 xp
+    let nextlvl = xp[message.author.id].level * 900;
+  // currentxp + xpAdd
+    xp[message.author.id].xp = currentxp + xpAdd;
+  //when xp gets to the nextlevel it will pop up the new level
+    if(nextlvl <= xp[message.author.id].xp)
   {
-    coins :0
-  };
-}
+      xp[message.author.id].level = currentlvl +1;
 
-let coinAmt = Math.floor(Math.random()*15)+1;
-let baseAmt = Math.floor(Math.random()*15)+1;
-console.log(`$[coinAmt]; $[baseAmt]`);
+    // using the RichEmbed from discord.js libary
+    let levelup = new Discord.RichEmbed()
+    .setTitle("Level uppp")
+    //new field, will display the new level from currentlvl + 1.
+    .addField("New Level",currentlvl + 1);
+    message.channel.send(levelup);
+            }
 
-
-  if(coinAmt === baseAmt){
-    coins[message.author.id] = {
-      coins: coins[message.author.id].coins + coinAmt
-};
-fs.writeFile("./coins.json", JSON.stringify(coins), (err) => {
-if (err) console.log(err)
+    //write to the xp.json. if theres a error it will console.log it .
+    fs.writeFile("./xp.json", JSON.stringify(xp), (error) => {
+      if(error) console.log(error)
+        });
 });
-let coinEmbed = new Discord.RichEmbed()
-.setAuthor(message.author.username)
-.setColor("#0000FF")
-.addField("💸", `${coinAmt} coins added!`);
-
-message.channel.send(coinEmbed).then(msg => {msg.delete(5000)});
-    }
 
 
 
 
-let xpAdd = Math.floor(Math.random() * 7) + 8;
-  console.log(xpAdd);
 
-  if(!xp[message.author.id]){
-    xp[message.author.id] = {
-      xp: 0,
-      level: 1
-    };
-  }
-
-
-  let curxp = xp[message.author.id].xp;
-  let curlvl = xp[message.author.id].level;
-  let nxtLvl = xp[message.author.id].level * 300;
-  xp[message.author.id].xp =  curxp + xpAdd;
-  if(nxtLvl <= xp[message.author.id].xp){
-    xp[message.author.id].level = curlvl + 1;
-    let lvlup = new Discord.RichEmbed()
-    .setTitle("Level Up!")
-    //.setColor(purple)
-    .addField("New Level", curlvl + 1);
-
-    message.channel.send(lvlup).then(msg => {msg.delete(5000)});
-  }
-  fs.writeFile("./xp.json", JSON.stringify(xp), (err) => {
-    if(err) console.log(err)
-      });
-
-//if users spam it will cool them down for a bit.
-
-
-//when the user joins the server it will greet them with welcome.
-
-
-});
 
 
 //While bot on, if pharase are said, the bot will react it different ways.

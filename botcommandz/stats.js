@@ -1,14 +1,29 @@
 const Discord = require("discord.js");
 
 module.exports.run= async(client, message,args) =>{
-let serverstates = new Discord.RichEmbed()
-.setDescription("server")
-.addField("server name", message.guild.name)
-.addField("created on", message.guild.createdAt)
-.addField("you joined", message.member.joinedAt)
-.addField("totla members", message.guild.memberCount);
 
-message.channel.send(serverstates);
+
+message.channel.send({ embed:{
+ Author:{
+   name:message.guild.name,
+   description:"The sever"
+ },
+ fields:[{
+ name:"created on:",
+ value: message.guild.createdAt
+      },
+{
+name:"you joined:",
+value:message.member.joinedAt
+},
+{
+  name:"member count:",
+  value: message.guild.memberCount
+}
+],
+
+    }
+      })
 }
 
 module.exports.help = {

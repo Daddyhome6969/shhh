@@ -1,62 +1,29 @@
 const Discord = require ("discord.js");
-const commando = require("discord.js-commando");
-const ytdl = require("ytdl-core");
+//const commando = require("discord.js-commando");
 
 
 
-exports.run = async(client,message,args)=>
-{
+module.exports.run = async (client, message, args) => {
+  // if memeber is voiceChannel then do this statement.
+  if (message.member.voiceChannel)
+  {
+    //if bot isnt in voice chat then do this.
+    if(!message.guild.voiceChannel)
+    {
+      //the bot will join if they aint in here.
 
-  //const serverQueue = queue.get(message.guild.id);
-
- if (!message.member.voiceChannel) return message.channel.send("please connect to a channel");
-
- if(message.guild.me.voiceChannel) return message.channel.send('sorry im in ');
-
- if(!args[0] )return message.channel.send('please put in url');
-//validating the url of the youtube.
-/*if (!serverQueue)
-{
-  const queueconstruct = {
-    textChannel: messge.channel,
-    voiceChannel: voiceChannel,
-    connect: null,
-    songs: [],
-    Playing : true
-  };
-  queue.set(message.guild.id, queueconstruct);
-}*/
-let validation = await ytdl.validateURL(args[0]);
-
-if(!validation) return message.channel.send("sorry the url isnt right");
-
-let infor = await ytdl.getInfo(args[0]);
-//
-let connection = await message.member.voiceChannel.join();
-//when
-const dispatcher = await connection.playStream﻿(ytdl(args[0], {filter: 'audioonly'}))
-.on ('end', () =>{
-console.log('song ended');
-voiceChannel.disconnect();
-
-})
-
-.on('err', error => {
- console.console(err);
-
-});
-
-
-dispatcher.setVolumeLogarithmic(5 / 5);
-
-message.channel.send(`now playing: ${infor.title}`);
-
-
-
-
+      message.member.voiceChannel.join()
+      .then(connected => {
+        message.reply("I have joined")
+      })
+    }
+  }
+  //if the user not in voicechat do this.
+  else {
+    message.reply("you need to be in  a voice channel")
+  }
 }
-     module.exports.help = {
 
-       name:"joins"
-
-     }
+module.exports.help = {
+    name: "join"
+}

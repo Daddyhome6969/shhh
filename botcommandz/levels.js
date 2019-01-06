@@ -1,7 +1,9 @@
 const Discord = require("discord.js");
+//this is getting the xp.json file.
 const xp = require("../xp.json");
 
     module.exports.run = async(client, message, args) =>{
+      //if sp dosent exist then create the user.
   if(!xp[message.author.id])
   {
     xp[message.author.id] = {
@@ -9,26 +11,32 @@ const xp = require("../xp.json");
       level:0
     };
   }
-  let curxp = xp[message.author.id].xp;
-  let curlvl = xp[message.author.id].level;
-  let nxtLvlxp = curlvl *300;
-  let difference = nxtLvlxp - curxp;
+  let currentxp = xp[message.author.id].xp;
+  let currentlvl = xp[message.author.id].level;
+  let nextlevelxp = currentlvl *900;
 
 
+// embed manually not using RichEmbed
+ message.channel.send({embed:
+{
+   author:{
+     name:message.author.username
 
-
-
-
-
-
- const embed = new Discord.RichEmbed()
-
-.setAuthor(message.author.username)
-.addField("level", curlvl, true)
-.addField("XP", curxp, true)
-.setFooter(`${difference} XP till level up`);
-message.channel.send(embed);
+   },
+   fields: [{
+     name: "current level ",
+     value:  xp[message.author.id].level
+   },
+   {
+     name: "Current Xp",
+     value:  xp[message.author.id].xp
+   }],
+footer:{
+  text:"copyright"
     }
+      }
+        });
+              }
 
 
     module.exports.help = {
